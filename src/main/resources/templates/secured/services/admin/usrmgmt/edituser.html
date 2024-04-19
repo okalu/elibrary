@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{layouts/master-layout}">
+<head>
+    <title>The eLibrary - a Spring Security Demo webapp - Users Management</title>
+</head>
+<body>
+    <div layout:fragment="content" style="padding-top:1em;" class="container">
+        <div>
+            <span style="font-size: 2em; color: #32a5e7;">Edit eLibrary<sup>&reg;</sup> User</span>
+        </div>
+        <hr/>
+        <div style="font-size: 1em; padding-top: 1em;">
+            <!-- Add form here -->
+            <form id="editUserForm" method="post" action="/elibrary/secured/services/admin/usrmgmt/user/edit" th:object="${user}">
+                <fieldset>
+                    <legend>User Information</legend>
+                    <input
+                            type="hidden"
+                            th:name="${_csrf.parameterName}"
+                            th:value="${_csrf.token}" />
+                    <input type="hidden" name="userId" th:value="${user.userId}">
+                    <div class="row">
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="firstName">First Name*</label>
+                                <span th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"
+                                      class="alert alert-danger"></span>
+                                <input id="firstName" name="firstName" type="text" class="form-control"
+                                       th:value="${user.firstName}" required autofocus>
+                            </div>
+                        </div>
+                        <div class="col-md-2">
+                            <div class="form-group">
+                                <label for="middleName">Middle Name</label>
+                                <span th:if="${#fields.hasErrors('middleName')}" th:errors="*{middleName}"
+                                      class="alert alert-danger"></span>
+                                <input id="middleName" name="middleName" type="text" class="form-control"
+                                       th:value="${user.middleName}">
+                            </div>
+                        </div>
+                        <div class="col-md-5">
+                            <div class="form-group">
+                                <label for="lastName">Last Name*</label>
+                                <span th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"
+                                      class="alert alert-danger"></span>
+                                <input id="lastName" name="lastName" type="text" class="form-control"
+                                       th:value="${user.lastName}" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="email">Email*</label>
+                                <span th:if="${#fields.hasErrors('email')}" th:errors="*{email}"
+                                      class="alert alert-danger"></span>
+                                <input id="email" name="email" type="text" class="form-control"
+                                       th:value="${user.email}" required>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Login Credentials</legend>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="username">Username*</label>
+                                <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
+                                      class="alert alert-danger"></span>
+                                <input id="username" name="username" type="text" class="form-control"
+                                       th:value="${user.username}" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="password">Password</label>
+                                <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+                                      class="alert alert-danger"></span>
+                                <input id="password" name="password" type="password" class="form-control"
+                                       th:value="${user.password}" minlength="8" required>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <fieldset>
+                    <legend>Roles</legend>
+                    <label th:each="role : ${roles}" style="padding-right: 4em;">
+                        <input style="margin-right: .5em;"
+                               name="roles" type="checkbox"
+                               th:value="${role.roleId}" th:text="${role.name}"
+                               th:field="*{roles}">
+                    </label>
+                </fieldset>
+                <hr style="width: 100%; border: 1em solid #32a5e7;">
+                <fieldset>
+                    <legend>Other Settings</legend>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="accountNonExpired">Account Expired*</label>
+                                <span th:if="${#fields.hasErrors('accountNonExpired')}" th:errors="*{accountNonExpired}"
+                                      class="alert alert-danger"></span>
+                                <select id="accountNonExpired" name="accountNonExpired" class="form-control"
+                                        required>
+                                    <option th:value="true" th:text="No" th:selected="${user.accountNonExpired == true}"></option>
+                                    <option th:value="false" th:text="Yes" th:selected="${user.accountNonExpired == false}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="accountNonLocked">Account Locked*</label>
+                                <span th:if="${#fields.hasErrors('accountNonLocked')}" th:errors="*{accountNonLocked}"
+                                      class="alert alert-danger"></span>
+                                <select id="accountNonLocked" name="accountNonLocked" class="form-control"
+                                        required>
+                                    <option th:value="true" th:text="No" th:selected="${user.accountNonLocked == true}"></option>
+                                    <option th:value="false" th:text="Yes" th:selected="${user.accountNonLocked == false}"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="credentialsNonExpired">Credentials Expired*</label>
+                                <span th:if="${#fields.hasErrors('credentialsNonExpired')}" th:errors="*{credentialsNonExpired}"
+                                      class="alert alert-danger"></span>
+                                <select id="credentialsNonExpired" name="credentialsNonExpired" class="form-control"
+                                         required>
+                                    <option th:value="true" th:text="No" th:selected="${user.credentialsNonExpired == true}"></option>
+                                    <option th:value="false" th:text="Yes" th:selected="${user.credentialsNonExpired == false}"></option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="enabled">Account Status*</label>
+                                <span th:if="${#fields.hasErrors('accountNonLocked')}" th:errors="*{enabled}"
+                                      class="alert alert-danger"></span>
+                                <select id="enabled" name="enabled" class="form-control"
+                                         th:field="*{enabled}" required>
+                                    <option th:value="false" th:text="Disabled"></option> <!-- th:selected="${user.enabled == false}" -->
+                                    <option th:value="true" th:text="Enabled"></option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="row">
+                    <div class="col-md-6">
+                        <a href="/elibrary/secured/services/admin/usrmgmt/list" class="btn btn-warning btn-lg">Cancel</a>
+                    </div>
+                    <div class="col-md-6" style="text-align: right;">
+                        <button type="reset" class="btn btn-primary btn-lg mx-2">Reset</button>
+                        <button type="submit" class="btn btn-success btn-lg">
+                            <i class="fa-solid fa-floppy-disk"></i> Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <th:block layout:fragment="footer"></th:block>
+
+</body>
+</html>

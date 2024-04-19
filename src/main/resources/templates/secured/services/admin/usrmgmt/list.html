@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
+      layout:decorate="~{layouts/master-layout}">
+<head>
+    <title>The eLibrary - a Spring Security Demo webapp - Users Management</title>
+</head>
+<body>
+    <div layout:fragment="content" style="padding-top:1em;" class="container">
+        <div>
+            <span style="font-size: 2em; color: #32a5e7;">eLibrary<sup>&reg;</sup> Users List</span>
+            <span style="float:right;">
+                <a class="btn btn-outline-success btn-lg" href="/elibrary/secured/services/admin/usrmgmt/user/new">
+                    <i class="fa-solid fa-user-plus"></i> Add a new User
+                </a>
+            </span>
+        </div>
+<!--        <hr/>-->
+        <div style="font-size: 1em; padding-top: 1em;">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Name</th>
+<!--                    <th scope="col">Middle Name</th>-->
+<!--                    <th scope="col">Last Name</th>-->
+                    <th scope="col">Email</th>
+                    <th scope="col">Username</th>
+<!--                    <th scope="col">Not Expired</th>-->
+<!--                    <th scope="col">Not Locked</th>-->
+<!--                    <th scope="col">Enabled</th>-->
+                    <th scope="col">Roles</th>
+                    <th scope="col">&nbsp;</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user,counter : ${users}">
+                    <!--th:onclick="@{document.location='/elibrary/book/edit/{bookId}'(bookId=${book.bookId})}" -->
+                    <th scope="row" th:text="${counter.count}+${'.'}"></th>
+                    <td th:text="${user.fullName}"></td>
+<!--                    <td th:text="${user.middleName}"></td>-->
+<!--                    <td th:text="${user.lastName}"></td>-->
+                    <td th:text="${user.email}"></td>
+                    <td th:text="${user.username}"></td>
+<!--                    <td th:text="${user.accountNonExpired}"></td>-->
+<!--                    <td th:text="${user.accountNonLocked}"></td>-->
+<!--                    <td th:text="${user.enabled}"></td>-->
+                    <td>
+                        <ul>
+                            <li th:each="role : ${user.roles}" th:text="${role.name}"></li>
+                        </ul>
+                    </td>
+                    <td>
+                        <a th:href="@{'/elibrary/secured/services/admin/usrmgmt/user/edit/{userId}'(userId=${user.userId})}">
+                            <i class="fa-regular fa-pen-to-square"></i> Edit
+                        </a>
+                    </td>
+<!--                    <td>-->
+<!--                        <a th:href="@{'/elibrary/user/delete/{userId}'(bookId=${book.bookId})}">Delete</a>-->
+                        <!--                        <a data-toggle="modal" data-target="#confirmDeleteBookModal" th:href="@{'/elibrary/book/delete/' + ${book.bookId}}">Delete</a>-->
+                        <!--                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModalCenter">-->
+                        <!--                            Launch demo modal-->
+                        <!--                        </button>-->
+<!--                    </td>-->
+                </tr>
+                <tr th:if="${users.size() < 1}">
+                    <td colspan="6" th:align="center">No Users found</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <th:block layout:fragment="footer"></th:block>
+
+</body>
+</html>
